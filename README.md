@@ -33,6 +33,7 @@ Our goals:
 **United Kingdom Domestic Appliance‑Level Electricity (UK‑DALE)**  
 Kelly & Knottenbelt (2015), Scientific Data  
 https://www.nature.com/articles/sdata20157
+https://ukerc.rl.ac.uk/cgi-bin/dataDiscover.pl?Action=detail&dataid=7d78f943-f9fe-413b-af52-1816f9d968b0
 
 ---
 

@@ -1,0 +1,49 @@
+smart-home-energy-optimizer/
+│
+├── README.md
+├── .gitignore
+├── environment.yml
+│
+├── data/
+│   ├── raw/
+│   ├── interim/
+│   └── processed/
+│
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_preprocessing.ipynb
+│   ├── 03_cnn_nilm.ipynb
+│   ├── 04_lstm_forecasting.ipynb
+│   └── 05_dashboard_exports.ipynb
+│
+├── src/
+│   ├── data/
+│   │   ├── load_data.py
+│   │   ├── clean_data.py
+│   │   └── preprocess.py
+│   │
+│   ├── models/
+│   │   ├── cnn_nilm.py
+│   │   ├── lstm_forecasting.py
+│   │   └── train_utils.py
+│   │
+│   ├── visualization/
+│   │   └── plot_utils.py
+│   │
+│   └── utils/
+│       └── helpers.py
+│
+├── docs/
+│   ├── iot_system_design/
+│   │   ├── diagram.png
+│   │   └── architecture_description.md
+│   ├── ml_model_descriptions.md
+│   └── apa_report_drafts/
+│
+├── dashboard/
+│   ├── tableau_exports/
+│   └── dashboard_notes.md
+│
+└── reports/
+    ├── final_report.pdf
+    └── status_reports/

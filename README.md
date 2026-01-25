@@ -2,7 +2,7 @@
 ### Team 2 – AAI 530: Data Analytics and the Internet of Things  
 Greg Bauer • Andrea Thomas • Darius Rowser  
 University of San Diego  
-Final Project – Spring 2026
+AAI-530 Data Analytics & IoT -- Final Project – Spring 2026
 
 ---
 

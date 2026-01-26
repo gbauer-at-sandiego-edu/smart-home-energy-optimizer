@@ -100,4 +100,50 @@ Defines sampling periods and measurement capabilities for each meter type.
 ---
 
 ## 5. Dataset Schema Diagram (ASCII)
+┌──────────────────────────────┐
+│        dataset.txt           │
+│  - name                      │
+│  - number_of_buildings       │
+│  - timeframe                 │
+│  - timezone                  │
+└───────────────┬──────────────┘
+                │
+                ▼
+┌──────────────────────────────────────────┐
+│           buildingN.txt                  │
+│  - building_type                         │
+│  - construction_year                     │
+│  - description_of_occupants              │
+│  - appliances[]                          │
+│  - elec_meters{}                         │
+└───────────────┬──────────────────────────┘
+                           │
+┌──────────────────────────┼──────────────────────────┐
+▼                          ▼                          ▼
+┌──────────────────┐     ┌──────────────────┐        ┌──────────────────┐
+│   appliances[]   │    │  elec_meters{}    │        │ meter_devices.txt│
+│ - type           │    │ - meter_id        │        │ - sample_period  │
+│ - meters[]       │    │ - data_location   │        │ - measurements   │
+│ - room           │    │ - device_model  ──┼──────▶│ - device specs   │
+│ - dates_active   │    │ - site_meter      │        └──────────────────┘
+└─────────┬────────┘    │ - timeframe       │
+          │             └─────────┬─────────┘
+          │                       │
+          ▼                       ▼
+┌──────────────────┐     ┌──────────────────────────────┐
+│  house_N folder   │    │   channel_X.dat / mains.dat  │
+│  (data/raw/)      │──▶│  timestamp, power            │
+└──────────────────┘     └──────────────────────────────┘
 
+---
+
+## 6. Summary
+
+This schema provides a complete reference for:
+
+- Navigating the dataset  
+- Understanding meter/appliance relationships  
+- Interpreting raw `.dat` files  
+- Using metadata to enrich analysis  
+
+It is intended for new team members onboarding to the project.

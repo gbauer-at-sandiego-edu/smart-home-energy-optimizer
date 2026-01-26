@@ -4,33 +4,63 @@ flowchart TD
     %% ============================
     %% Global Dataset Metadata
     %% ============================
-    A[dataset.txt<br/>• name<br/>• number_of_buildings<br/>• timeframe<br/>• timezone] 
+    A["dataset.txt
+    name
+    number_of_buildings
+    timeframe
+    timezone"]
 
     %% ============================
     %% Building Metadata
     %% ============================
-    A --> B1[buildingN.txt<br/>• building_type<br/>• construction_year<br/>• occupants<br/>• appliances[]<br/>• elec_meters{}]
+    A --> B1["buildingN.txt
+    building_type
+    construction_year
+    occupants
+    appliances[]
+    elec_meters{}"]
 
     %% ============================
     %% Appliances
     %% ============================
-    B1 --> C[appliances[]<br/>• type<br/>• meters[]<br/>• room<br/>• description<br/>• dates_active]
+    B1 --> C["appliances[]
+    type
+    meters[]
+    room
+    description
+    dates_active"]
 
     %% ============================
     %% Meters
     %% ============================
-    B1 --> D[elec_meters{}<br/>• meter_id<br/>• data_location<br/>• device_model<br/>• site_meter<br/>• submeter_of<br/>• timeframe]
+    B1 --> D["elec_meters{}
+    meter_id
+    data_location
+    device_model
+    site_meter
+    submeter_of
+    timeframe"]
 
     %% ============================
     %% Meter Devices
     %% ============================
-    D --> E[meter_devices.txt<br/>• sample_period<br/>• measurements<br/>• wireless<br/>• model_url]
+    D --> E["meter_devices.txt
+    sample_period
+    measurements
+    wireless
+    model_url"]
 
     %% ============================
     %% Raw Data Files
     %% ============================
-    D --> F[house_N folder<br/>data/raw/house_N/]
+    D --> F["house_N folder
+    data/raw/house_N/"]
 
-    F --> G[channel_X.dat<br/>• timestamp<br/>• power]
+    F --> G["channel_X.dat
+    timestamp
+    power"]
 
-    F --> H[mains.dat<br/>• timestamp<br/>• power]
+    F --> H["mains.dat
+    timestamp
+    power"]
+

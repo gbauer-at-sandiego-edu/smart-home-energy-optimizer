@@ -26,3 +26,8 @@ This project uses the UK-DALE dataset (Kaggle mirror HDF5: `ukdale.h5`) and prod
 ```bash
 !git clone https://github.com/gbauer-at-sandiego-edu/smart-home-energy-optimizer.git
 %cd smart-home-energy-optimizer/smart-home-energy-optimizer/smart-home-energy-optimizer
+
+!pip -q install kagglehub pandas tables
+
+!PYTHONPATH=. python src/data_ingest.py
+

@@ -1,100 +1,55 @@
+```mermaid
 flowchart LR
 
+%% Home Layer
+subgraph HOME["Home Environment"]
+SM["Smart Meter"]
+AM["Appliance Sub‑meters"]
+EDGE["Edge Gateway"]
+end
 
+%% Network Layer
+subgraph NET["Network Layer"]
+MQTT["MQTT Broker<br/>Secure Publish"]
+end
 
-&nbsp;   %% Home Layer
+%% Cloud Ingestion
+subgraph INGEST["Cloud Ingestion"]
+PROC["Stream Processing<br/>Validation • Enrichment • Routing"]
+end
 
-&nbsp;   subgraph HOME\["Home Environment"]
+%% Storage Layer
+subgraph STORAGE["Cloud Storage"]
+TSDB["Time‑Series DB<br/>Curated 1‑min data"]
+OBJ["Object Storage<br/>Raw + Processed"]
+META["Metadata Store"]
+end
 
-&nbsp;       SM\["Smart Meter"]
+%% ML Layer
+subgraph ML["Machine Learning"]
+CNN["CNN NILM Model"]
+LSTM["LSTM Forecasting Model"]
+end
 
-&nbsp;       AM\["Appliance Sub‑meters"]
+%% Dashboard Layer
+subgraph DASH["Dashboard"]
+TBL["Tableau Visualizations<br/>Status • Summary • ML Insights"]
+end
 
-&nbsp;       EDGE\["Edge Gateway"]
+%% Connections
+SM --> EDGE
+AM --> EDGE
+EDGE --> MQTT --> PROC
 
-&nbsp;   end
+PROC --> TSDB
+PROC --> OBJ
+PROC --> META
 
+TSDB --> CNN --> TBL
+TSDB --> LSTM --> TBL
 
+OBJ --> CNN
+OBJ --> LSTM
 
-&nbsp;   %% Network Layer
-
-&nbsp;   subgraph NET\["Network Layer"]
-
-&nbsp;       MQTT\["MQTT Broker<br/>Secure Publish"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Cloud Ingestion
-
-&nbsp;   subgraph INGEST\["Cloud Ingestion"]
-
-&nbsp;       PROC\["Stream Processing<br/>Validation • Enrichment • Routing"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Storage Layer
-
-&nbsp;   subgraph STORAGE\["Cloud Storage"]
-
-&nbsp;       TSDB\["Time‑Series DB<br/>Curated 1‑min data"]
-
-&nbsp;       OBJ\["Object Storage<br/>Raw + Processed"]
-
-&nbsp;       META\["Metadata Store"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% ML Layer
-
-&nbsp;   subgraph ML\["Machine Learning"]
-
-&nbsp;       CNN\["CNN NILM Model"]
-
-&nbsp;       LSTM\["LSTM Forecasting Model"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Dashboard Layer
-
-&nbsp;   subgraph DASH\["Dashboard"]
-
-&nbsp;       TBL\["Tableau Visualizations<br/>Status • Summary • ML Insights"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   SM --> EDGE
-
-&nbsp;   AM --> EDGE
-
-&nbsp;   EDGE --> MQTT --> PROC
-
-&nbsp;   PROC --> TSDB
-
-&nbsp;   PROC --> OBJ
-
-&nbsp;   PROC --> META
-
-&nbsp;   TSDB --> CNN --> TBL
-
-&nbsp;   TSDB --> LSTM --> TBL
-
-&nbsp;   OBJ --> CNN
-
-&nbsp;   OBJ --> LSTM
-
-&nbsp;   META --> TBL
-
-
-
+META --> TBL
+```

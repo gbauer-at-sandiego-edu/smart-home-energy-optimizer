@@ -1,58 +1,30 @@
+```mermaid
 flowchart TD
 
+ROOT["MQTT Broker<br/>(TLS + Auth)"]
 
+%% House-level root
+ROOT --> H1["house/1/"]
+ROOT --> H2["house/2/"]
+ROOT --> HN["house/{house_id}/"]
 
-&nbsp;   ROOT\["MQTT Broker<br/>(TLS + Auth)"]
+%% Mains topics
+H1 --> H1_MAINS["house/1/mains"]
+H2 --> H2_MAINS["house/2/mains"]
+HN --> HN_MAINS["house/{house_id}/mains"]
 
+%% Appliance topics
+H1 --> H1_APP["house/1/appliance/{appliance_id}"]
+H2 --> H2_APP["house/2/appliance/{appliance_id}"]
+HN --> HN_APP["house/{house_id}/appliance/{appliance_id}"]
 
+%% Alerts
+H1 --> H1_ALERT["house/1/alerts"]
+H2 --> H2_ALERT["house/2/alerts"]
+HN --> HN_ALERT["house/{house_id}/alerts"]
 
-&nbsp;   %% House-level root
-
-&nbsp;   ROOT --> H1\["house/1/"]
-
-&nbsp;   ROOT --> H2\["house/2/"]
-
-&nbsp;   ROOT --> HN\["house/{house\_id}/"]
-
-
-
-&nbsp;   %% Mains topics
-
-&nbsp;   H1 --> H1\_MAINS\["house/1/mains"]
-
-&nbsp;   H2 --> H2\_MAINS\["house/2/mains"]
-
-&nbsp;   HN --> HN\_MAINS\["house/{house\_id}/mains"]
-
-
-
-&nbsp;   %% Appliance topics
-
-&nbsp;   H1 --> H1\_APP\["house/1/appliance/{appliance\_id}"]
-
-&nbsp;   H2 --> H2\_APP\["house/2/appliance/{appliance\_id}"]
-
-&nbsp;   HN --> HN\_APP\["house/{house\_id}/appliance/{appliance\_id}"]
-
-
-
-&nbsp;   %% Alerts
-
-&nbsp;   H1 --> H1\_ALERT\["house/1/alerts"]
-
-&nbsp;   H2 --> H2\_ALERT\["house/2/alerts"]
-
-&nbsp;   HN --> HN\_ALERT\["house/{house\_id}/alerts"]
-
-
-
-&nbsp;   %% Metadata
-
-&nbsp;   ROOT --> META\["system/metadata/"]
-
-&nbsp;   META --> DEVICES\["system/metadata/devices"]
-
-&nbsp;   META --> MODELS\["system/metadata/models"]
-
-
-
+%% Metadata
+ROOT --> META["system/metadata/"]
+META --> DEVICES["system/metadata/devices"]
+META --> MODELS["system/metadata/models"]
+```

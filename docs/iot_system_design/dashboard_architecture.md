@@ -1,80 +1,41 @@
+```mermaid
 flowchart LR
 
+%% Data Sources
+subgraph SOURCES["Data Sources"]
+TSDB["Time‑Series DB<br/>Curated 1‑min data"]
+OBJ["Object Storage<br/>ML Outputs (CSV)"]
+META["Metadata Store<br/>Appliances • Houses • Models"]
+end
 
+%% Tableau Server
+subgraph TABLEAU["Tableau Server / Cloud"]
+EXTRACTS["Data Extracts<br/>Scheduled Refresh"]
+LIVE_CONN["Live Connections<br/>TSDB Queries"]
+CACHE["Cached Views<br/>Fallback during outages"]
+end
 
-&nbsp;   %% Data Sources
+%% Dashboard Views
+subgraph VIEWS["Dashboard Views"]
+STATUS["System Status View<br/>Live usage + health"]
+NILM_VIEW["NILM View<br/>Appliance‑level breakdown"]
+FORECAST_VIEW["Forecast View<br/>Next‑hour predictions"]
+ENERGY_SUM["Energy Summary<br/>Daily/weekly/monthly"]
+end
 
-&nbsp;   subgraph SOURCES\["Data Sources"]
+%% Connections
+TSDB --> LIVE_CONN --> STATUS
+TSDB --> EXTRACTS --> ENERGY_SUM
 
-&nbsp;       TSDB\["Time‑Series DB<br/>Curated 1‑min data"]
+OBJ --> EXTRACTS --> NILM_VIEW
+OBJ --> EXTRACTS --> FORECAST_VIEW
 
-&nbsp;       OBJ\["Object Storage<br/>ML Outputs (CSV)"]
+META --> EXTRACTS
+META --> LIVE_CONN
 
-&nbsp;       META\["Metadata Store<br/>Appliances • Houses • Models"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Tableau Server
-
-&nbsp;   subgraph TABLEAU\["Tableau Server / Cloud"]
-
-&nbsp;       EXTRACTS\["Data Extracts<br/>Scheduled Refresh"]
-
-&nbsp;       LIVE\_CONN\["Live Connections<br/>TSDB Queries"]
-
-&nbsp;       CACHE\["Cached Views<br/>Fallback during outages"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Dashboard Views
-
-&nbsp;   subgraph VIEWS\["Dashboard Views"]
-
-&nbsp;       STATUS\["System Status View<br/>Live usage + health"]
-
-&nbsp;       NILM\_VIEW\["NILM View<br/>Appliance‑level breakdown"]
-
-&nbsp;       FORECAST\_VIEW\["Forecast View<br/>Next‑hour predictions"]
-
-&nbsp;       ENERGY\_SUM\["Energy Summary<br/>Daily/weekly/monthly"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   TSDB --> LIVE\_CONN --> STATUS
-
-&nbsp;   TSDB --> EXTRACTS --> ENERGY\_SUM
-
-
-
-&nbsp;   OBJ --> EXTRACTS --> NILM\_VIEW
-
-&nbsp;   OBJ --> EXTRACTS --> FORECAST\_VIEW
-
-
-
-&nbsp;   META --> EXTRACTS
-
-&nbsp;   META --> LIVE\_CONN
-
-
-
-&nbsp;   TABLEAU --> CACHE
-
-&nbsp;   CACHE --> STATUS
-
-&nbsp;   CACHE --> NILM\_VIEW
-
-&nbsp;   CACHE --> FORECAST\_VIEW
-
-&nbsp;   CACHE --> ENERGY\_SUM
-
-
-
+TABLEAU --> CACHE
+CACHE --> STATUS
+CACHE --> NILM_VIEW
+CACHE --> FORECAST_VIEW
+CACHE --> ENERGY_SUM
+```

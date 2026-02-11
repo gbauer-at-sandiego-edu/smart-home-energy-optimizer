@@ -1,84 +1,43 @@
+```mermaid
 flowchart TB
 
+%% Data Sources
+subgraph SOURCES["Data Sources"]
+TSDB["Time‑Series DB<br/>1‑min curated data"]
+ML_OUT["ML Outputs<br/>NILM + Forecasts"]
+META["Metadata Store<br/>Appliances • Meters • Models"]
+end
 
+%% Data Prep Layer
+subgraph PREP["Dashboard Data Preparation"]
+EXTRACT["Extract Data<br/>TSDB + ML + Metadata"]
+JOIN["Join & Merge<br/>Align timestamps, house_id"]
+CALC["Calculated Fields<br/>Daily totals, % breakdowns"]
+AGG["Aggregation<br/>Hourly • Daily • Weekly"]
+end
 
-&nbsp;   %% Data Sources
+%% Dashboard Layer
+subgraph DASH["Dashboard Layer (Tableau)"]
+STATUS["Status View<br/>Current usage, alerts"]
+SUMMARY["Summary View<br/>Daily/weekly totals"]
+NILM_VIEW["NILM View<br/>Appliance breakdown"]
+FORECAST_VIEW["Forecast View<br/>Predicted vs actual"]
+EXPORT["Export Options<br/>CSV • PNG • PDF"]
+end
 
-&nbsp;   subgraph SOURCES\["Data Sources"]
+%% Connections
+TSDB --> EXTRACT
+ML_OUT --> EXTRACT
+META --> EXTRACT
 
-&nbsp;       TSDB\["Time‑Series DB<br/>1‑min curated data"]
+EXTRACT --> JOIN --> CALC --> AGG
 
-&nbsp;       ML\_OUT\["ML Outputs<br/>NILM + Forecasts"]
+AGG --> STATUS
+AGG --> SUMMARY
+AGG --> NILM_VIEW
+AGG --> FORECAST_VIEW
 
-&nbsp;       META\["Metadata Store<br/>Appliances • Meters • Models"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Data Prep Layer
-
-&nbsp;   subgraph PREP\["Dashboard Data Preparation"]
-
-&nbsp;       EXTRACT\["Extract Data<br/>TSDB + ML + Metadata"]
-
-&nbsp;       JOIN\["Join \& Merge<br/>Align timestamps, house\_id"]
-
-&nbsp;       CALC\["Calculated Fields<br/>Daily totals, % breakdowns"]
-
-&nbsp;       AGG\["Aggregation<br/>Hourly • Daily • Weekly"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Dashboard Layer
-
-&nbsp;   subgraph DASH\["Dashboard Layer (Tableau)"]
-
-&nbsp;       STATUS\["Status View<br/>Current usage, alerts"]
-
-&nbsp;       SUMMARY\["Summary View<br/>Daily/weekly totals"]
-
-&nbsp;       NILM\_VIEW\["NILM View<br/>Appliance breakdown"]
-
-&nbsp;       FORECAST\_VIEW\["Forecast View<br/>Predicted vs actual"]
-
-&nbsp;       EXPORT\["Export Options<br/>CSV • PNG • PDF"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   TSDB --> EXTRACT
-
-&nbsp;   ML\_OUT --> EXTRACT
-
-&nbsp;   META --> EXTRACT
-
-
-
-&nbsp;   EXTRACT --> JOIN --> CALC --> AGG
-
-
-
-&nbsp;   AGG --> STATUS
-
-&nbsp;   AGG --> SUMMARY
-
-&nbsp;   AGG --> NILM\_VIEW
-
-&nbsp;   AGG --> FORECAST\_VIEW
-
-
-
-&nbsp;   NILM\_VIEW --> EXPORT
-
-&nbsp;   FORECAST\_VIEW --> EXPORT
-
-&nbsp;   SUMMARY --> EXPORT
-
-
-
+NILM_VIEW --> EXPORT
+FORECAST_VIEW --> EXPORT
+SUMMARY --> EXPORT
+```

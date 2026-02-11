@@ -1,70 +1,34 @@
+```mermaid
 flowchart LR
 
+%% Code Pipeline
+subgraph CODE["Code Pipeline (Backend + Dashboard)"]
+CODE_COMMIT["Commit to Repo<br/>Git Push"]
+CODE_BUILD["Build & Unit Tests"]
+CODE_SCAN["Security Scan<br/>Lint • SAST"]
+CODE_DEPLOY["Deploy to Cloud<br/>Ingestion + Dashboard"]
+end
 
+%% Model Pipeline
+subgraph MODEL["Model Pipeline (CNN + LSTM)"]
+DATA_PULL["Pull Curated Data<br/>TSDB + Object Storage"]
+TRAIN["Train Models<br/>CNN NILM + LSTM Forecast"]
+EVAL["Evaluate Models<br/>MAE • RMSE • F1"]
+REGISTRY["Register Model<br/>Model Registry"]
+BATCH_DEPLOY["Deploy Batch Jobs<br/>Prediction Pipeline"]
+end
 
-&nbsp;   %% Code Pipeline
+%% Edge OTA Pipeline
+subgraph EDGE["Edge OTA Pipeline"]
+EDGE_COMMIT["Commit Edge Code"]
+EDGE_BUILD["Build Edge Package"]
+EDGE_SIGN["Sign Firmware<br/>Integrity Check"]
+EDGE_PUSH["Push to OTA Server"]
+EDGE_UPDATE["Edge Auto‑Update<br/>Download + Apply"]
+end
 
-&nbsp;   subgraph CODE\["Code Pipeline (Backend + Dashboard)"]
-
-&nbsp;       CODE\_COMMIT\["Commit to Repo<br/>Git Push"]
-
-&nbsp;       CODE\_BUILD\["Build \& Unit Tests"]
-
-&nbsp;       CODE\_SCAN\["Security Scan<br/>Lint • SAST"]
-
-&nbsp;       CODE\_DEPLOY\["Deploy to Cloud<br/>Ingestion + Dashboard"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Model Pipeline
-
-&nbsp;   subgraph MODEL\["Model Pipeline (CNN + LSTM)"]
-
-&nbsp;       DATA\_PULL\["Pull Curated Data<br/>TSDB + Object Storage"]
-
-&nbsp;       TRAIN\["Train Models<br/>CNN NILM + LSTM Forecast"]
-
-&nbsp;       EVAL\["Evaluate Models<br/>MAE • RMSE • F1"]
-
-&nbsp;       REGISTRY\["Register Model<br/>Model Registry"]
-
-&nbsp;       BATCH\_DEPLOY\["Deploy Batch Jobs<br/>Prediction Pipeline"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Edge OTA Pipeline
-
-&nbsp;   subgraph EDGE\["Edge OTA Pipeline"]
-
-&nbsp;       EDGE\_COMMIT\["Commit Edge Code"]
-
-&nbsp;       EDGE\_BUILD\["Build Edge Package"]
-
-&nbsp;       EDGE\_SIGN\["Sign Firmware<br/>Integrity Check"]
-
-&nbsp;       EDGE\_PUSH\["Push to OTA Server"]
-
-&nbsp;       EDGE\_UPDATE\["Edge Auto‑Update<br/>Download + Apply"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   CODE\_COMMIT --> CODE\_BUILD --> CODE\_SCAN --> CODE\_DEPLOY
-
-
-
-&nbsp;   DATA\_PULL --> TRAIN --> EVAL --> REGISTRY --> BATCH\_DEPLOY
-
-
-
-&nbsp;   EDGE\_COMMIT --> EDGE\_BUILD --> EDGE\_SIGN --> EDGE\_PUSH --> EDGE\_UPDATE
-
-
-
+%% Connections
+CODE_COMMIT --> CODE_BUILD --> CODE_SCAN --> CODE_DEPLOY
+DATA_PULL --> TRAIN --> EVAL --> REGISTRY --> BATCH_DEPLOY
+EDGE_COMMIT --> EDGE_BUILD --> EDGE_SIGN --> EDGE_PUSH --> EDGE_UPDATE
+```

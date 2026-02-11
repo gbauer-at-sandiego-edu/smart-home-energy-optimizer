@@ -1,110 +1,114 @@
+```mermaid
+
 flowchart TB
 
 
 
-&nbsp;   %% Home Layer
+%% Home Layer
 
-&nbsp;   subgraph Home\["Home Environment"]
+subgraph Home\["Home Environment"]
 
-&nbsp;       SM\["Smart Meter (Mains)"]
+SM\["Smart Meter (Mains)"]
 
-&nbsp;       AM\["Appliance Sub-meters"]
+AM\["Appliance Sub-meters"]
 
-&nbsp;       EDGE\["Edge Gateway Device"]
+EDGE\["Edge Gateway Device"]
 
-&nbsp;   end
-
-
-
-&nbsp;   %% Network Layer
-
-&nbsp;   subgraph Network\["Network Layer"]
-
-&nbsp;       WIFI\["Wi-Fi / Ethernet"]
-
-&nbsp;       MQTT\["MQTT Broker / IoT Hub"]
-
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Cloud Ingestion
+%% Network Layer
 
-&nbsp;   subgraph Ingestion\["Cloud Ingestion"]
+subgraph Network\["Network Layer"]
 
-&nbsp;       SP\["Stream Processor"]
+WIFI\["Wi-Fi / Ethernet"]
 
-&nbsp;       VAL\["Validation and Enrichment"]
+MQTT\["MQTT Broker / IoT Hub"]
 
-&nbsp;       ROUTE\["Routing to Storage and ML"]
-
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Storage Layer
+%% Cloud Ingestion
 
-&nbsp;   subgraph Storage\["Storage Layer"]
+subgraph Ingestion\["Cloud Ingestion"]
 
-&nbsp;       TSDB\["Time-Series Database"]
+SP\["Stream Processor"]
 
-&nbsp;       OBJ\["Object Storage"]
+VAL\["Validation and Enrichment"]
 
-&nbsp;       META\["Metadata Store"]
+ROUTE\["Routing to Storage and ML"]
 
-&nbsp;   end
-
-
-
-&nbsp;   %% ML Layer
-
-&nbsp;   subgraph ML\["Machine Learning"]
-
-&nbsp;       CNN\["CNN NILM Model"]
-
-&nbsp;       LSTM\["LSTM/GRU Forecasting Model"]
-
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Dashboard Layer
+%% Storage Layer
 
-&nbsp;   subgraph Dashboard\["Dashboard"]
+subgraph Storage\["Storage Layer"]
 
-&nbsp;       TBL\["Tableau Dashboard"]
+TSDB\["Time-Series Database"]
 
-&nbsp;   end
+OBJ\["Object Storage"]
+
+META\["Metadata Store"]
+
+end
 
 
 
-&nbsp;   %% Connections
+%% ML Layer
 
-&nbsp;   SM --> EDGE
+subgraph ML\["Machine Learning"]
 
-&nbsp;   AM --> EDGE
+CNN\["CNN NILM Model"]
 
-&nbsp;   EDGE --> WIFI --> MQTT
+LSTM\["LSTM/GRU Forecasting Model"]
 
-&nbsp;   MQTT --> SP --> VAL --> ROUTE
+end
 
-&nbsp;   ROUTE --> TSDB
 
-&nbsp;   ROUTE --> OBJ
 
-&nbsp;   ROUTE --> META
+%% Dashboard Layer
 
-&nbsp;   TSDB --> CNN
+subgraph Dashboard\["Dashboard"]
 
-&nbsp;   TSDB --> LSTM
+TBL\["Tableau Dashboard"]
 
-&nbsp;   OBJ --> CNN
+end
 
-&nbsp;   OBJ --> LSTM
 
-&nbsp;   CNN --> TBL
 
-&nbsp;   LSTM --> TBL
+%% Connections
+
+SM --> EDGE
+
+AM --> EDGE
+
+EDGE --> WIFI --> MQTT
+
+MQTT --> SP --> VAL --> ROUTE
+
+ROUTE --> TSDB
+
+ROUTE --> OBJ
+
+ROUTE --> META
+
+TSDB --> CNN
+
+TSDB --> LSTM
+
+OBJ --> CNN
+
+OBJ --> LSTM
+
+CNN --> TBL
+
+LSTM --> TBL
+
+```
 
 
 

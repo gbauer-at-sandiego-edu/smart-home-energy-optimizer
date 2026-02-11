@@ -1,86 +1,76 @@
+```mermaid
+
 flowchart TB
 
 
 
-&nbsp;   %% Topic Hierarchy
+%% Topic Hierarchy
 
-&nbsp;   subgraph TOPICS\["MQTT Topic Hierarchy"]
+subgraph TOPICS\["MQTT Topic Hierarchy"]
 
-&nbsp;       ROOT\["iot/"]
+ROOT\["iot/"]
 
-&nbsp;       HOUSE\["iot/{house\_id}/"]
+HOUSE\["iot/{house\_id}/"]
 
-&nbsp;       MAINS\["iot/{house\_id}/mains"]
+MAINS\["iot/{house\_id}/mains"]
 
-&nbsp;       APPLIANCE\["iot/{house\_id}/appliance/{appliance\_id}"]
+APPLIANCE\["iot/{house\_id}/appliance/{appliance\_id}"]
 
-&nbsp;       STATUS\["iot/{house\_id}/status"]
+STATUS\["iot/{house\_id}/status"]
 
-&nbsp;   end
-
-
-
-&nbsp;   %% Data Contract (JSON replaced with safe field list)
-
-&nbsp;   subgraph CONTRACT\["Data Contract Fields"]
-
-&nbsp;       PAYLOAD\["Fields:
-
-\- house\_id
-
-\- appliance\_id
-
-\- timestamp
-
-\- power
-
-\- voltage
-
-\- current
-
-\- frequency"]
-
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Ingestion Routing
+%% Data Contract (Field List)
 
-&nbsp;   subgraph ROUTE\["Ingestion Routing Logic"]
+subgraph CONTRACT\["Data Contract Fields"]
 
-&nbsp;       VALIDATE\["Schema Validation"]
+PAYLOAD\["Fields:<br/>- house\_id<br/>- appliance\_id<br/>- timestamp<br/>- power<br/>- voltage<br/>- current<br/>- frequency"]
 
-&nbsp;       ENRICH\["Metadata Enrichment"]
-
-&nbsp;       NORMALIZE\["Normalization"]
-
-&nbsp;       STORE\_TSDB\["Write to TSDB"]
-
-&nbsp;       STORE\_RAW\["Write Raw to Object Storage"]
-
-&nbsp;       STORE\_META\["Update Metadata Store"]
-
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Connections
+%% Ingestion Routing
 
-&nbsp;   ROOT --> HOUSE --> MAINS --> PAYLOAD
+subgraph ROUTE\["Ingestion Routing Logic"]
 
-&nbsp;   HOUSE --> APPLIANCE --> PAYLOAD
+VALIDATE\["Schema Validation"]
 
-&nbsp;   HOUSE --> STATUS
+ENRICH\["Metadata Enrichment"]
+
+NORMALIZE\["Normalization"]
+
+STORE\_TSDB\["Write to TSDB"]
+
+STORE\_RAW\["Write Raw to Object Storage"]
+
+STORE\_META\["Update Metadata Store"]
+
+end
 
 
 
-&nbsp;   PAYLOAD --> VALIDATE --> ENRICH --> NORMALIZE
+%% Connections
 
-&nbsp;   NORMALIZE --> STORE\_TSDB
+ROOT --> HOUSE --> MAINS --> PAYLOAD
 
-&nbsp;   NORMALIZE --> STORE\_RAW
+HOUSE --> APPLIANCE --> PAYLOAD
 
-&nbsp;   ENRICH --> STORE\_META
+HOUSE --> STATUS
+
+
+
+PAYLOAD --> VALIDATE --> ENRICH --> NORMALIZE
+
+NORMALIZE --> STORE\_TSDB
+
+NORMALIZE --> STORE\_RAW
+
+ENRICH --> STORE\_META
+
+```
 
 
 

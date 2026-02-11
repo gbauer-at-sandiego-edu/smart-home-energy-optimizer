@@ -1,88 +1,92 @@
+```mermaid
+
 sequenceDiagram
 
-&nbsp;   autonumber
+autonumber
 
 
 
-&nbsp;   participant SM as Smart Meter
+participant SM as Smart Meter
 
-&nbsp;   participant EDGE as Edge Gateway
+participant EDGE as Edge Gateway
 
-&nbsp;   participant MQTT as MQTT Broker
+participant MQTT as MQTT Broker
 
-&nbsp;   participant INGEST as Cloud Ingestion
+participant INGEST as Cloud Ingestion
 
-&nbsp;   participant DLQ as Dead‑Letter Queue
+participant DLQ as Dead‑Letter Queue
 
-&nbsp;   participant TSDB as Time‑Series DB
+participant TSDB as Time‑Series DB
 
-&nbsp;   participant ML as ML Models
+participant ML as ML Models
 
-&nbsp;   participant DASH as Dashboard
-
-
-
-&nbsp;   %% Edge Failure + Recovery
-
-&nbsp;   SM->>EDGE: Send reading
-
-&nbsp;   EDGE->>EDGE: Write to local buffer
-
-&nbsp;   EDGE->>MQTT: Publish message
-
-&nbsp;   MQTT--xEDGE: Network failure
-
-&nbsp;   EDGE->>EDGE: Retry with backoff
-
-&nbsp;   EDGE->>MQTT: Reconnect + republish
+participant DASH as Dashboard
 
 
 
-&nbsp;   %% Ingestion Failure + DLQ
+%% Edge Failure + Recovery
 
-&nbsp;   MQTT->>INGEST: Deliver message
+SM->>EDGE: Send reading
 
-&nbsp;   INGEST--xINGEST: Schema validation fails
+EDGE->>EDGE: Write to local buffer
 
-&nbsp;   INGEST->>DLQ: Route message to DLQ
+EDGE->>MQTT: Publish message
 
-&nbsp;   INGEST->>INGEST: Log error + alert
+MQTT--xEDGE: Network failure
 
+EDGE->>EDGE: Retry with backoff
 
-
-&nbsp;   %% Successful Ingestion After Recovery
-
-&nbsp;   EDGE->>MQTT: Republish corrected message
-
-&nbsp;   MQTT->>INGEST: Deliver message
-
-&nbsp;   INGEST->>TSDB: Write curated data
+EDGE->>MQTT: Reconnect + republish
 
 
 
-&nbsp;   %% ML Pipeline Error + Fallback
+%% Ingestion Failure + DLQ
 
-&nbsp;   ML->>TSDB: Read data
+MQTT->>INGEST: Deliver message
 
-&nbsp;   ML--xML: Model load failure
+INGEST--xINGEST: Schema validation fails
 
-&nbsp;   ML->>ML: Load fallback model
+INGEST->>DLQ: Route message to DLQ
 
-&nbsp;   ML->>TSDB: Write predictions
+INGEST->>INGEST: Log error + alert
 
 
 
-&nbsp;   %% Dashboard Degradation + Recovery
+%% Successful Ingestion After Recovery
 
-&nbsp;   DASH->>TSDB: Query data
+EDGE->>MQTT: Republish corrected message
 
-&nbsp;   TSDB--xDASH: Query timeout
+MQTT->>INGEST: Deliver message
 
-&nbsp;   DASH->>DASH: Use cached view
+INGEST->>TSDB: Write curated data
 
-&nbsp;   DASH->>TSDB: Retry query
 
-&nbsp;   TSDB->>DASH: Return fresh data
+
+%% ML Pipeline Error + Fallback
+
+ML->>TSDB: Read data
+
+ML--xML: Model load failure
+
+ML->>ML: Load fallback model
+
+ML->>TSDB: Write predictions
+
+
+
+%% Dashboard Degradation + Recovery
+
+DASH->>TSDB: Query data
+
+TSDB--xDASH: Query timeout
+
+DASH->>DASH: Use cached view
+
+DASH->>TSDB: Retry query
+
+TSDB->>DASH: Return fresh data
+
+```
 
 
 

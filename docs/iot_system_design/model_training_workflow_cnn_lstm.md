@@ -1,68 +1,35 @@
+```mermaid
 flowchart TB
 
+%% Input Data
+PROC["Processed 1‑Minute Data<br/>Cleaned CSVs"]
 
+%% Feature Engineering
+subgraph FEAT["Feature Engineering"]
+WIN_CNN["CNN Sliding Windows"]
+WIN_LSTM["LSTM Sequence Windows"]
+NORM["Normalization / Scaling"]
+end
 
-&nbsp;   %% Input Data
+%% CNN Training Pipeline
+subgraph CNN_PIPE["CNN NILM Training Pipeline"]
+BATCH_CNN["Batching<br/>Window batches"]
+TRAIN_CNN["Training Loop<br/>Forward + Backprop"]
+VAL_CNN["Validation Loop<br/>Accuracy • F1"]
+CHECK_CNN["Model Checkpoint<br/>Best weights"]
+SAVE_CNN["Save Trained CNN Model"]
+end
 
-&nbsp;   PROC\["Processed 1‑Minute Data<br/>Cleaned CSVs"]
+%% LSTM Training Pipeline
+subgraph LSTM_PIPE["LSTM/GRU Forecasting Training Pipeline"]
+BATCH_LSTM["Batching<br/>Sequence batches"]
+TRAIN_LSTM["Training Loop<br/>Forward + Backprop"]
+VAL_LSTM["Validation Loop<br/>MAE • RMSE"]
+CHECK_LSTM["Model Checkpoint<br/>Best weights"]
+SAVE_LSTM["Save Trained LSTM Model"]
+end
 
-
-
-&nbsp;   %% Feature Engineering
-
-&nbsp;   subgraph FEAT\["Feature Engineering"]
-
-&nbsp;       WIN\_CNN\["CNN Sliding Windows"]
-
-&nbsp;       WIN\_LSTM\["LSTM Sequence Windows"]
-
-&nbsp;       NORM\["Normalization / Scaling"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% CNN Training Pipeline
-
-&nbsp;   subgraph CNN\_PIPE\["CNN NILM Training Pipeline"]
-
-&nbsp;       BATCH\_CNN\["Batching<br/>Window batches"]
-
-&nbsp;       TRAIN\_CNN\["Training Loop<br/>Forward + Backprop"]
-
-&nbsp;       VAL\_CNN\["Validation Loop<br/>Accuracy • F1"]
-
-&nbsp;       CHECK\_CNN\["Model Checkpoint<br/>Best weights"]
-
-&nbsp;       SAVE\_CNN\["Save Trained CNN Model"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% LSTM Training Pipeline
-
-&nbsp;   subgraph LSTM\_PIPE\["LSTM/GRU Forecasting Training Pipeline"]
-
-&nbsp;       BATCH\_LSTM\["Batching<br/>Sequence batches"]
-
-&nbsp;       TRAIN\_LSTM\["Training Loop<br/>Forward + Backprop"]
-
-&nbsp;       VAL\_LSTM\["Validation Loop<br/>MAE • RMSE"]
-
-&nbsp;       CHECK\_LSTM\["Model Checkpoint<br/>Best weights"]
-
-&nbsp;       SAVE\_LSTM\["Save Trained LSTM Model"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   PROC --> WIN\_CNN --> NORM --> BATCH\_CNN --> TRAIN\_CNN --> VAL\_CNN --> CHECK\_CNN --> SAVE\_CNN
-
-&nbsp;   PROC --> WIN\_LSTM --> NORM --> BATCH\_LSTM --> TRAIN\_LSTM --> VAL\_LSTM --> CHECK\_LSTM --> SAVE\_LSTM
-
-
-
+%% Connections
+PROC --> WIN_CNN --> NORM --> BATCH_CNN --> TRAIN_CNN --> VAL_CNN --> CHECK_CNN --> SAVE_CNN
+PROC --> WIN_LSTM --> NORM --> BATCH_LSTM --> TRAIN_LSTM --> VAL_LSTM --> CHECK_LSTM --> SAVE_LSTM
+```

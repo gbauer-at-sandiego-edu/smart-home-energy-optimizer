@@ -1,64 +1,35 @@
+```mermaid
 flowchart LR
 
-&nbsp;   %% Raw Data
+%% Raw Data
+RAW["Raw UK‑DALE Data<br/>(HDF5: ukdale.h5)"]
 
-&nbsp;   RAW\["Raw UK‑DALE Data<br/>(HDF5: ukdale.h5)"]
+%% Ingestion
+INGEST["Ingestion Script<br/>data_ingest.py"]
+CLEAN["Cleaning & Validation<br/>Interpolation, clipping"]
+RESAMPLE["Resampling<br/>1‑minute interval"]
+SLICE["180‑Day Slice<br/>Aligned across houses"]
 
+%% Processed Data
+PROC["Processed CSVs<br/>House_1_cleaned.csv<br/>House_2_cleaned.csv"]
 
+%% Modeling
+WIN_CNN["Windowing for CNN<br/>(Sliding windows)"]
+WIN_LSTM["Windowing for LSTM<br/>(Past 24h → Next hour)"]
 
-&nbsp;   %% Ingestion
+CNN["CNN NILM Model"]
+LSTM["LSTM/GRU Forecasting Model"]
 
-&nbsp;   INGEST\["Ingestion Script<br/>data\_ingest.py"]
+%% Outputs
+OUT_CNN["NILM Outputs<br/>Appliance ON/OFF"]
+OUT_LSTM["Forecast Outputs<br/>Next‑hour usage"]
 
-&nbsp;   CLEAN\["Cleaning \& Validation<br/>Interpolation, clipping"]
+%% Dashboard
+DASH["Tableau Dashboard<br/>Status • Summary • ML Insights"]
 
-&nbsp;   RESAMPLE\["Resampling<br/>1‑minute interval"]
+%% Connections
+RAW --> INGEST --> CLEAN --> RESAMPLE --> SLICE --> PROC
 
-&nbsp;   SLICE\["180‑Day Slice<br/>Aligned across houses"]
-
-
-
-&nbsp;   %% Processed Data
-
-&nbsp;   PROC\["Processed CSVs<br/>House\_1\_cleaned.csv<br/>House\_2\_cleaned.csv"]
-
-
-
-&nbsp;   %% Modeling
-
-&nbsp;   WIN\_CNN\["Windowing for CNN<br/>(Sliding windows)"]
-
-&nbsp;   WIN\_LSTM\["Windowing for LSTM<br/>(Past 24h → Next hour)"]
-
-
-
-&nbsp;   CNN\["CNN NILM Model"]
-
-&nbsp;   LSTM\["LSTM/GRU Forecasting Model"]
-
-
-
-&nbsp;   %% Outputs
-
-&nbsp;   OUT\_CNN\["NILM Outputs<br/>Appliance ON/OFF"]
-
-&nbsp;   OUT\_LSTM\["Forecast Outputs<br/>Next‑hour usage"]
-
-
-
-&nbsp;   %% Dashboard
-
-&nbsp;   DASH\["Tableau Dashboard<br/>Status • Summary • ML Insights"]
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   RAW --> INGEST --> CLEAN --> RESAMPLE --> SLICE --> PROC
-
-&nbsp;   PROC --> WIN\_CNN --> CNN --> OUT\_CNN --> DASH
-
-&nbsp;   PROC --> WIN\_LSTM --> LSTM --> OUT\_LSTM --> DASH
-
-
-
+PROC --> WIN_CNN --> CNN --> OUT_CNN --> DASH
+PROC --> WIN_LSTM --> LSTM --> OUT_LSTM --> DASH
+```

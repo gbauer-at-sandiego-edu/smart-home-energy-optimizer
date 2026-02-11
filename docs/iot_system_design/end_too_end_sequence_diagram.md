@@ -1,64 +1,68 @@
+```mermaid
+
 sequenceDiagram
 
-&nbsp;   autonumber
+autonumber
 
 
 
-&nbsp;   participant SM as Smart Meter
+participant SM as Smart Meter
 
-&nbsp;   participant EDGE as Edge Gateway
+participant EDGE as Edge Gateway
 
-&nbsp;   participant MQTT as MQTT Broker
+participant MQTT as MQTT Broker
 
-&nbsp;   participant INGEST as Cloud Ingestion
+participant INGEST as Cloud Ingestion
 
-&nbsp;   participant TSDB as Time‑Series DB
+participant TSDB as Time‑Series DB
 
-&nbsp;   participant OBJ as Object Storage
+participant OBJ as Object Storage
 
-&nbsp;   participant ML as ML Models (CNN + LSTM)
+participant ML as ML Models (CNN + LSTM)
 
-&nbsp;   participant DASH as Dashboard (Tableau)
-
-
-
-&nbsp;   SM->>EDGE: Send mains/appliance readings
-
-&nbsp;   EDGE->>EDGE: Local buffering + retry logic
-
-&nbsp;   EDGE->>MQTT: Publish message (TLS + Auth)
+participant DASH as Dashboard (Tableau)
 
 
 
-&nbsp;   MQTT->>INGEST: Forward message
+SM->>EDGE: Send mains/appliance readings
 
-&nbsp;   INGEST->>INGEST: Schema validation
+EDGE->>EDGE: Local buffering + retry logic
 
-&nbsp;   INGEST->>INGEST: Metadata enrichment
-
-&nbsp;   INGEST->>TSDB: Write curated 1‑min data
-
-&nbsp;   INGEST->>OBJ: Store raw/processed files
+EDGE->>MQTT: Publish message (TLS + Auth)
 
 
 
-&nbsp;   ML->>TSDB: Read curated data
+MQTT->>INGEST: Forward message
 
-&nbsp;   ML->>OBJ: Read raw/processed data
+INGEST->>INGEST: Schema validation
 
-&nbsp;   ML->>ML: Run CNN NILM + LSTM Forecasting
+INGEST->>INGEST: Metadata enrichment
 
-&nbsp;   ML->>OBJ: Save model outputs (CSV)
+INGEST->>TSDB: Write curated 1‑min data
 
-&nbsp;   ML->>TSDB: Write derived metrics (optional)
+INGEST->>OBJ: Store raw/processed files
 
 
 
-&nbsp;   DASH->>TSDB: Query curated data
+ML->>TSDB: Read curated data
 
-&nbsp;   DASH->>OBJ: Query ML outputs
+ML->>OBJ: Read raw/processed data
 
-&nbsp;   DASH->>DASH: Render views (Status, NILM, Forecast)
+ML->>ML: Run CNN NILM + LSTM Forecasting
+
+ML->>OBJ: Save model outputs (CSV)
+
+ML->>TSDB: Write derived metrics (optional)
+
+
+
+DASH->>TSDB: Query curated data
+
+DASH->>OBJ: Query ML outputs
+
+DASH->>DASH: Render views (Status, NILM, Forecast)
+
+```
 
 
 

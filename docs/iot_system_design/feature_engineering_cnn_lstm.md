@@ -1,50 +1,26 @@
+```mermaid
 flowchart TB
 
+%% Input
+PROC["Processed 1‑Minute Data<br/>House_1_cleaned.csv<br/>House_2_cleaned.csv"]
 
+%% CNN Branch
+subgraph CNN_FE["CNN NILM Feature Engineering"]
+NORM_CNN["Normalization<br/>Min‑Max or Standard Scaling"]
+WIN_CNN["Sliding Window Creation<br/>e.g., 128–512 timesteps"]
+LABEL_CNN["Label Extraction<br/>Appliance ON/OFF"]
+CNN_INPUT["CNN Input Tensors<br/>Shape: [window, 1]"]
+end
 
-&nbsp;   %% Input
+%% LSTM Branch
+subgraph LSTM_FE["LSTM/GRU Forecasting Feature Engineering"]
+NORM_LSTM["Normalization<br/>Scaling across full sequence"]
+WIN_LSTM["Sequence Windowing<br/>Past 24h → Next Hour"]
+TARGET_LSTM["Target Extraction<br/>Next‑hour usage"]
+LSTM_INPUT["LSTM Input Sequences<br/>Shape: [1440, 1]"]
+end
 
-&nbsp;   PROC\["Processed 1‑Minute Data<br/>House\_1\_cleaned.csv<br/>House\_2\_cleaned.csv"]
-
-
-
-&nbsp;   %% CNN Branch
-
-&nbsp;   subgraph CNN\_FE\["CNN NILM Feature Engineering"]
-
-&nbsp;       NORM\_CNN\["Normalization<br/>Min‑Max or Standard Scaling"]
-
-&nbsp;       WIN\_CNN\["Sliding Window Creation<br/>e.g., 128–512 timesteps"]
-
-&nbsp;       LABEL\_CNN\["Label Extraction<br/>Appliance ON/OFF"]
-
-&nbsp;       CNN\_INPUT\["CNN Input Tensors<br/>Shape: \[window, 1]"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% LSTM Branch
-
-&nbsp;   subgraph LSTM\_FE\["LSTM/GRU Forecasting Feature Engineering"]
-
-&nbsp;       NORM\_LSTM\["Normalization<br/>Scaling across full sequence"]
-
-&nbsp;       WIN\_LSTM\["Sequence Windowing<br/>Past 24h → Next Hour"]
-
-&nbsp;       TARGET\_LSTM\["Target Extraction<br/>Next‑hour usage"]
-
-&nbsp;       LSTM\_INPUT\["LSTM Input Sequences<br/>Shape: \[1440, 1]"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Connections
-
-&nbsp;   PROC --> NORM\_CNN --> WIN\_CNN --> LABEL\_CNN --> CNN\_INPUT
-
-&nbsp;   PROC --> NORM\_LSTM --> WIN\_LSTM --> TARGET\_LSTM --> LSTM\_INPUT
-
-
-
+%% Connections
+PROC --> NORM_CNN --> WIN_CNN --> LABEL_CNN --> CNN_INPUT
+PROC --> NORM_LSTM --> WIN_LSTM --> TARGET_LSTM --> LSTM_INPUT
+```

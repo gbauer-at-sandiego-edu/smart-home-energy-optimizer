@@ -1,158 +1,162 @@
+```mermaid
+
 flowchart TD
 
 
 
-&nbsp;   %% Top-level repo
+%% Top-level repo
 
-&nbsp;   REPO\["smart-home-energy-optimizer (GitHub Repo)"]
+REPO\["smart-home-energy-optimizer (GitHub Repo)"]
 
 
 
-&nbsp;   %% Directories
+%% Directories
 
-&nbsp;   REPO --> SRC\["src/"]
+REPO --> SRC\["src/"]
 
-&nbsp;   REPO --> NOTE\["notebooks/"]
+REPO --> NOTE\["notebooks/"]
 
-&nbsp;   REPO --> DOCS\["docs/"]
+REPO --> DOCS\["docs/"]
 
-&nbsp;   REPO --> REPORTS\["reports/"]
+REPO --> REPORTS\["reports/"]
 
-&nbsp;   REPO --> DASH\["dashboard/"]
+REPO --> DASH\["dashboard/"]
 
-&nbsp;   REPO --> DATA\["data/"]
+REPO --> DATA\["data/"]
 
-&nbsp;   REPO --> ENV\["environment.yml"]
+REPO --> ENV\["environment.yml"]
 
-&nbsp;   REPO --> README\["README.md"]
+REPO --> README\["README.md"]
 
 
 
-&nbsp;   %% src/
+%% src/
 
-&nbsp;   subgraph SRC\_DIR\["src/ (Python Modules)"]
+subgraph SRC\_DIR\["src/ (Python Modules)"]
 
-&nbsp;       INGEST\["data\_ingest.py"]
+INGEST\["data\_ingest.py"]
 
-&nbsp;       DOWNLOAD\["data\_download.py"]
+DOWNLOAD\["data\_download.py"]
 
-&nbsp;       CONFIG\["config.py"]
+CONFIG\["config.py"]
 
-&nbsp;       MODELS\["models/"]
+MODELS\["models/"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% models/
+%% models/
 
-&nbsp;   subgraph MODELS\_DIR\["models/ (Model Code)"]
+subgraph MODELS\_DIR\["models/ (Model Code)"]
 
-&nbsp;       CNN\["cnn\_nilm.py"]
+CNN\["cnn\_nilm.py"]
 
-&nbsp;       LSTM\["lstm\_forecasting.py"]
+LSTM\["lstm\_forecasting.py"]
 
-&nbsp;       TRAIN\_UTILS\["train\_utils.py (planned)"]
+TRAIN\_UTILS\["train\_utils.py (planned)"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% notebooks/
+%% notebooks/
 
-&nbsp;   subgraph NOTE\_DIR\["notebooks/ (Jupyter Notebooks)"]
+subgraph NOTE\_DIR\["notebooks/ (Jupyter Notebooks)"]
 
-&nbsp;       EDA\["01\_eda.ipynb"]
+EDA\["01\_eda.ipynb"]
 
-&nbsp;       CLEAN\["02\_preprocessing.ipynb"]
+CLEAN\["02\_preprocessing.ipynb"]
 
-&nbsp;       CNN\_NB\["03\_cnn\_nilm.ipynb"]
+CNN\_NB\["03\_cnn\_nilm.ipynb"]
 
-&nbsp;       LSTM\_NB\["04\_lstm\_forecasting.ipynb"]
+LSTM\_NB\["04\_lstm\_forecasting.ipynb"]
 
-&nbsp;       DASH\_NB\["05\_dashboard\_exports.ipynb"]
+DASH\_NB\["05\_dashboard\_exports.ipynb"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% docs/
+%% docs/
 
-&nbsp;   subgraph DOCS\_DIR\["docs/ (Documentation)"]
+subgraph DOCS\_DIR\["docs/ (Documentation)"]
 
-&nbsp;       SYS\_DESIGN\["system\_design.md"]
+SYS\_DESIGN\["system\_design.md"]
 
-&nbsp;       DATA\_SEL\["dataset\_selection.md"]
+DATA\_SEL\["dataset\_selection.md"]
 
-&nbsp;       DATA\_DICT\["data\_dictionary.md"]
+DATA\_DICT\["data\_dictionary.md"]
 
-&nbsp;       CNN\_LSTM\_JUST\["CNN\_vs\_LSTM\_Justification.md"]
+CNN\_LSTM\_JUST\["CNN\_vs\_LSTM\_Justification.md"]
 
-&nbsp;       SCALABILITY\["scalability\_considerations.md"]
+SCALABILITY\["scalability\_considerations.md"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% reports/
+%% reports/
 
-&nbsp;   subgraph REPORTS\_DIR\["reports/"]
+subgraph REPORTS\_DIR\["reports/"]
 
-&nbsp;       STATUS\["status\_reports/"]
+STATUS\["status\_reports/"]
 
-&nbsp;       FINAL\["final\_report.pdf (planned)"]
+FINAL\["final\_report.pdf (planned)"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% dashboard/
+%% dashboard/
 
-&nbsp;   subgraph DASH\_DIR\["dashboard/"]
+subgraph DASH\_DIR\["dashboard/"]
 
-&nbsp;       TBL\_EXPORTS\["tableau\_exports/ (planned)"]
+TBL\_EXPORTS\["tableau\_exports/ (planned)"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% data/
+%% data/
 
-&nbsp;   subgraph DATA\_DIR\["data/"]
+subgraph DATA\_DIR\["data/"]
 
-&nbsp;       RAW\["raw/ (empty, .gitkeep)"]
+RAW\["raw/ (empty, .gitkeep)"]
 
-&nbsp;       PROC\["processed/ (cleaned CSVs)"]
+PROC\["processed/ (cleaned CSVs)"]
 
-&nbsp;   end
+end
 
 
 
-&nbsp;   %% Relationships
+%% Relationships
 
-&nbsp;   INGEST --> CONFIG
+INGEST --> CONFIG
 
-&nbsp;   INGEST --> PROC
+INGEST --> PROC
 
-&nbsp;   DOWNLOAD --> RAW
+DOWNLOAD --> RAW
 
-&nbsp;   CNN\_NB --> CNN
+CNN\_NB --> CNN
 
-&nbsp;   LSTM\_NB --> LSTM
+LSTM\_NB --> LSTM
 
-&nbsp;   EDA --> CLEAN
+EDA --> CLEAN
 
-&nbsp;   CLEAN --> PROC
+CLEAN --> PROC
 
-&nbsp;   CNN --> TRAIN\_UTILS
+CNN --> TRAIN\_UTILS
 
-&nbsp;   LSTM --> TRAIN\_UTILS
+LSTM --> TRAIN\_UTILS
 
-&nbsp;   PROC --> CNN\_NB
+PROC --> CNN\_NB
 
-&nbsp;   PROC --> LSTM\_NB
+PROC --> LSTM\_NB
 
-&nbsp;   PROC --> DASH\_NB
+PROC --> DASH\_NB
+
+```
 
 
 

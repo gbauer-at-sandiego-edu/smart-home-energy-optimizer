@@ -1,106 +1,54 @@
+```mermaid
 flowchart TB
 
+%% Ingestion Layer
+subgraph INGEST["Cloud Ingestion Layer"]
+SP["Stream Processor"]
+VAL["Validation & Enrichment"]
+ROUTE["Routing Logic"]
+end
 
+%% Storage Layer
+subgraph STORAGE["Cloud Storage Architecture"]
+TSDB["Time‑Series Database<br/>• 1‑min curated data<br/>• Partitioned by house_id"]
+OBJ_RAW["Object Storage: Raw Data<br/>• HDF5 files<br/>• Unprocessed streams"]
+OBJ_PROC["Object Storage: Processed Data<br/>• Cleaned CSVs<br/>• Resampled slices"]
+META["Metadata Store<br/>• Appliance info<br/>• Meter mappings<br/>• Model versions"]
+ML_OUT["ML Output Store<br/>• NILM results<br/>• Forecast results"]
+end
 
-&nbsp;   %% Ingestion Layer
+%% ML Layer
+subgraph ML["Machine Learning Pipelines"]
+CNN["CNN NILM Model"]
+LSTM["LSTM/GRU Forecasting Model"]
+end
 
-&nbsp;   subgraph INGEST\["Cloud Ingestion Layer"]
+%% Dashboard
+subgraph DASH["Dashboard Layer"]
+TBL["Tableau Dashboard"]
+end
 
-&nbsp;       SP\["Stream Processor"]
+%% Ingestion to Storage
+SP --> VAL --> ROUTE
+ROUTE --> TSDB
+ROUTE --> OBJ_RAW
+ROUTE --> OBJ_PROC
+ROUTE --> META
 
-&nbsp;       VAL\["Validation \& Enrichment"]
+%% Storage to ML
+TSDB --> CNN
+TSDB --> LSTM
+OBJ_PROC --> CNN
+OBJ_PROC --> LSTM
+META --> CNN
+META --> LSTM
 
-&nbsp;       ROUTE\["Routing Logic"]
+%% ML Outputs
+CNN --> ML_OUT
+LSTM --> ML_OUT
 
-&nbsp;   end
-
-
-
-&nbsp;   %% Storage Layer
-
-&nbsp;   subgraph STORAGE\["Cloud Storage Architecture"]
-
-&nbsp;       TSDB\["Time‑Series Database<br/>• 1‑min curated data<br/>• Partitioned by house\_id"]
-
-&nbsp;       OBJ\_RAW\["Object Storage: Raw Data<br/>• HDF5 files<br/>• Unprocessed streams"]
-
-&nbsp;       OBJ\_PROC\["Object Storage: Processed Data<br/>• Cleaned CSVs<br/>• Resampled slices"]
-
-&nbsp;       META\["Metadata Store<br/>• Appliance info<br/>• Meter mappings<br/>• Model versions"]
-
-&nbsp;       ML\_OUT\["ML Output Store<br/>• NILM results<br/>• Forecast results"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% ML Layer
-
-&nbsp;   subgraph ML\["Machine Learning Pipelines"]
-
-&nbsp;       CNN\["CNN NILM Model"]
-
-&nbsp;       LSTM\["LSTM/GRU Forecasting Model"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Dashboard
-
-&nbsp;   subgraph DASH\["Dashboard Layer"]
-
-&nbsp;       TBL\["Tableau Dashboard"]
-
-&nbsp;   end
-
-
-
-&nbsp;   %% Ingestion to Storage
-
-&nbsp;   SP --> VAL --> ROUTE
-
-&nbsp;   ROUTE --> TSDB
-
-&nbsp;   ROUTE --> OBJ\_RAW
-
-&nbsp;   ROUTE --> OBJ\_PROC
-
-&nbsp;   ROUTE --> META
-
-
-
-&nbsp;   %% Storage to ML
-
-&nbsp;   TSDB --> CNN
-
-&nbsp;   TSDB --> LSTM
-
-&nbsp;   OBJ\_PROC --> CNN
-
-&nbsp;   OBJ\_PROC --> LSTM
-
-&nbsp;   META --> CNN
-
-&nbsp;   META --> LSTM
-
-
-
-&nbsp;   %% ML Outputs
-
-&nbsp;   CNN --> ML\_OUT
-
-&nbsp;   LSTM --> ML\_OUT
-
-
-
-&nbsp;   %% Dashboard
-
-&nbsp;   ML\_OUT --> TBL
-
-&nbsp;   TSDB --> TBL
-
-&nbsp;   META --> TBL
-
-
-
+%% Dashboard
+ML_OUT --> TBL
+TSDB --> TBL
+META --> TBL
+```

@@ -8,6 +8,8 @@ flowchart TD
 
 
 
+&nbsp;   %% Buildings
+
 &nbsp;   ROOT --> B1\["building1"]
 
 &nbsp;   ROOT --> B2\["building2"]
@@ -19,6 +21,8 @@ flowchart TD
 &nbsp;   ROOT --> B5\["building5"]
 
 
+
+&nbsp;   %% Elec groups
 
 &nbsp;   B1 --> B1E\["elec"]
 
@@ -32,7 +36,7 @@ flowchart TD
 
 
 
-&nbsp;   %% Representative meters only (Mermaid cannot render all 111)
+&nbsp;   %% Representative meters only (GitHub cannot render all 111)
 
 &nbsp;   B1E --> B1M1\["meter1"]
 
@@ -40,7 +44,7 @@ flowchart TD
 
 &nbsp;   B1E --> B1M3\["meter3"]
 
-&nbsp;   B1E --> B1Mdots\["… meter4–meter54"]
+&nbsp;   B1E --> B1More\["… meter4–meter54"]
 
 
 
@@ -48,19 +52,19 @@ flowchart TD
 
 &nbsp;   B2E --> B2M2\["meter2"]
 
-&nbsp;   B2E --> B2Mdots\["… meter3–meter20"]
+&nbsp;   B2E --> B2More\["… meter3–meter20"]
 
 
 
 &nbsp;   B3E --> B3M1\["meter1"]
 
-&nbsp;   B3E --> B3Mdots\["… meter2–meter5"]
+&nbsp;   B3E --> B3More\["… meter2–meter5"]
 
 
 
 &nbsp;   B4E --> B4M1\["meter1"]
 
-&nbsp;   B4E --> B4Mdots\["… meter2–meter6"]
+&nbsp;   B4E --> B4More\["… meter2–meter6"]
 
 
 
@@ -68,7 +72,7 @@ flowchart TD
 
 &nbsp;   B5E --> B5M2\["meter2"]
 
-&nbsp;   B5E --> B5Mdots\["… meter3–meter26"]
+&nbsp;   B5E --> B5More\["… meter3–meter26"]
 
 
 

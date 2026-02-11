@@ -1,159 +1,192 @@
 ---
 
-# **UK‑DALE Dataset — Data Dictionary & Schema**
+# **UK‑DALE HDF5 Dataset — Project Data Dictionary & Schema**
 
-This document provides a structured overview of the UK‑DALE dataset as used in this project, including file formats, metadata structure, and relationships between buildings, meters, appliances, and raw time‑series data.
-
----
-
-## **1. Time‑Series Files (`.dat`)**
-
-Each `.dat` file is a space‑separated CSV with no header.
-
-### **File Format**
-
-| Column    | Type    | Description                          |
-|-----------|---------|--------------------------------------|
-| timestamp | int64   | UNIX timestamp (seconds, UTC)        |
-| power     | float32 | Power reading in watts               |
-
-### **Notes**
-
-- Sampling period is typically **6 seconds** (EcoManager / CurrentCost).
-- Some mains meters use **1‑second** sampling (SoundCardPowerMeter).
-- In analysis, timestamps are converted to a timezone‑aware `DatetimeIndex`.
+This document provides a complete, project‑specific description of the UK‑DALE dataset as stored in the NILMTK‑formatted HDF5 file (`ukdale.h5`).  
+It reflects the **actual structure discovered through programmatic exploration**, including buildings, meters, table schemas, sampling intervals, and raw data fields.
 
 ---
 
-## **2. Building Metadata (`building1.txt` … `building5.txt`)**
+# **1. Overview**
 
-Each file describes one building.
+The dataset consists of **five residential buildings**, each containing multiple electricity meters.  
+All data is stored in a hierarchical HDF5 structure using PyTables.  
+Each meter contains a single table of raw power readings sampled at **6‑second intervals**.
 
-### **Top‑Level Fields**
+This data dictionary describes:
 
-| Field                    | Type   | Description                           |
-|--------------------------|--------|---------------------------------------|
-| building_type            | string | e.g., *end of terrace*, *flat*        |
-| construction_year        | int    | Year the home was built               |
-| description_of_occupants | string | Household composition                 |
-| appliances               | list   | Appliance metadata entries            |
-| elec_meters              | dict   | Meter metadata entries                |
-
----
-
-## **2.1 Appliance Metadata**
-
-Each appliance entry contains:
-
-| Field            | Type      | Description                                     |
-|------------------|-----------|-------------------------------------------------|
-| type             | string    | Appliance category (e.g., kettle, fridge)       |
-| original_name    | string    | Name used during data collection                |
-| meters           | list[int] | Meter IDs associated with this appliance        |
-| room             | string    | Location in the home                            |
-| year_of_purchase | int       | Optional                                        |
-| description      | string    | Free‑text notes                                 |
-| dates_active     | list      | Optional start/end periods                      |
-| components       | list      | Optional subcomponents                          |
+- The HDF5 hierarchy  
+- Meter schemas  
+- Sampling characteristics  
+- Row counts per meter  
+- Example raw data  
+- Notes relevant to preprocessing and modeling  
 
 ---
 
-## **2.2 Meter Metadata**
+# **2. HDF5 File Structure**
 
-Each meter entry is keyed by meter ID:
+The root of the file contains one group per building:
 
-| Field         | Type   | Description                                              |
-|---------------|--------|----------------------------------------------------------|
-| data_location | string | Path to `.dat` file (e.g., `house_1/channel_10.dat`)     |
-| device_model  | string | Meter type (e.g., EcoManagerTxPlug)                      |
-| site_meter    | bool   | True if this is the mains meter                          |
-| submeter_of   | int    | Parent meter ID (0 = none)                               |
-| disabled      | bool   | True if meter was inactive                               |
-| timeframe     | dict   | `{start: ISO8601, end: ISO8601}`                         |
+```
+/building1
+/building2
+/building3
+/building4
+/building5
+```
 
----
+Each building contains an `elec` group:
 
-## **3. Dataset Metadata (`dataset.txt`)**
+```
+/buildingX/elec/
+```
 
-Global dataset‑level information.
+Each meter is stored as:
 
-| Field               | Type   | Description                     |
-|---------------------|--------|---------------------------------|
-| name                | string | Dataset name (UK‑DALE)          |
-| description         | string | High‑level summary              |
-| number_of_buildings | int    | Always 5                        |
-| geo_location        | dict   | Latitude/longitude              |
-| timeframe           | dict   | Global start/end timestamps     |
-| timezone            | string | Europe/London                   |
-| creators            | list   | Dataset authors                 |
-| related_documents   | list   | Publications and links          |
+```
+/buildingX/elec/meterY/table
+```
 
----
+Example:
 
-## **4. Meter Device Metadata (`meter_devices.txt`)**
-
-Defines sampling periods and measurement capabilities for each meter type.
-
-| Field             | Type   | Description                         |
-|-------------------|--------|-------------------------------------|
-| sample_period     | int    | Sampling interval in seconds        |
-| measurements      | list   | Power/voltage measurement specs     |
-| max_sample_period | int    | Maximum supported interval          |
-| wireless          | bool   | Whether the meter is wireless       |
-| model_url         | string | Documentation link                  |
-
----
-
-## **5. Dataset Schema Diagram (ASCII)**
-
-```text
-┌──────────────────────────────┐
-│        dataset.txt           │
-│  - name                      │
-│  - number_of_buildings       │
-│  - timeframe                 │
-│  - timezone                  │
-└───────────────┬──────────────┘
-                │
-                ▼
-┌──────────────────────────────────────────┐
-│           buildingN.txt                  │
-│  - building_type                         │
-│  - construction_year                     │
-│  - description_of_occupants              │
-│  - appliances[]                          │
-│  - elec_meters{}                         │
-└───────────────┬──────────────────────────┘
-                           │
-┌──────────────────────────┼──────────────────────────┐
-▼                          ▼                          ▼
-┌──────────────────┐     ┌──────────────────┐        ┌──────────────────┐
-│   appliances[]   │     │  elec_meters{}   │        │ meter_devices.txt│
-│ - type           │     │ - meter_id       │        │ - sample_period  │
-│ - meters[]       │     │ - data_location  │        │ - measurements   │
-│ - room           │     │ - device_model   │        │ - device specs   │
-│ - dates_active   │     │ - site_meter     │        └──────────────────┘
-└─────────┬────────┘     │ - timeframe      │
-          │              └─────────┬────────┘
-          │                        │
-          ▼                        ▼
-┌──────────────────┐     ┌──────────────────────────────┐
-│  house_N folder   │     │   channel_X.dat / mains.dat  │
-│  (data/raw/)      │────▶│   timestamp, power           │
-└──────────────────┘     └──────────────────────────────┘
+```
+/building1/elec/meter1/table
 ```
 
 ---
 
-## **6. Summary**
+# **3. Meter Table Schema**
 
-This schema provides a complete reference for:
+Every meter table in the dataset shares the same schema:
 
-- Navigating the dataset  
-- Understanding meter/appliance relationships  
-- Interpreting raw `.dat` files  
-- Using metadata to enrich analysis  
+| Column            | Type      | Description |
+|-------------------|-----------|-------------|
+| `index`           | int64     | Nanosecond UNIX timestamp |
+| `values_block_0`  | float32   | Active power in watts |
 
-It is intended for new team members onboarding to the project.
+Example PyTables description:
+
+```
+{
+  "index": Int64Col(),
+  "values_block_0": Float32Col(shape=(1,))
+}
+```
+
+There are **no additional fields** such as voltage, current, temperature, or appliance labels.
+
+---
+
+# **4. Sampling Interval**
+
+Using the first 50,000 samples of `building1/meter1`, the sampling interval was computed as:
+
+- **Mode:** 6 seconds  
+- **Median:** 6 seconds  
+
+This matches the expected sampling rate of the EcoManager / CurrentCost meters used in UK‑DALE.
+
+All meters examined follow the same 6‑second sampling pattern.
+
+---
+
+# **5. Meter Counts per Building**
+
+Programmatic enumeration of the file revealed:
+
+| Building   | Number of Meters |
+|------------|------------------|
+| building1  | 54 |
+| building2  | 20 |
+| building3  | 5 |
+| building4  | 6 |
+| building5  | 26 |
+
+These counts match the NILMTK HDF5 format, where each appliance or circuit may have its own meter.
+
+---
+
+# **6. Row Counts per Meter**
+
+Each meter contains a different number of rows depending on:
+
+- duration of monitoring  
+- sampling continuity  
+- whether the meter was active for the full dataset period  
+
+Examples:
+
+- `building1/meter1`: **21,837,636 rows**  
+- `building1/meter54`: **128,238,700 rows**  
+- `building2/meter20`: **12,166,699 rows**  
+- `building3/meter1`: **512,327 rows**  
+- `building5/meter26`: **11,405,812 rows**
+
+All meters contain only the two raw fields described above.
+
+A full programmatic summary is available in the exploration notebook.
+
+---
+
+# **7. Example Raw Data**
+
+Sample from `building1/meter1`:
+
+| index (ns)           | values_block_0 |
+|----------------------|----------------|
+| 1352500095000000000  | 599.0          |
+| 1352500101000000000  | 582.0          |
+| 1352500107000000000  | 600.0          |
+| 1352500113000000000  | 586.0          |
+| 1352500120000000000  | 596.0          |
+
+After conversion:
+
+- `index` → UTC timestamp  
+- `values_block_0` → `power_watts`  
+
+---
+
+# **8. Preprocessing Notes**
+
+Before modeling, the following transformations were applied:
+
+- Convert `index` from nanoseconds → timezone‑aware `DatetimeIndex`  
+- Rename `values_block_0` → `power_watts`  
+- Set timestamp as index  
+- Resample to **1‑hour mean**  
+- Remove negative or missing values  
+- Engineer additional features (lags, rolling windows, calendar features)
+
+These engineered features are **not part of the raw dataset**.
+
+---
+
+# **9. What the Dataset Does *Not* Contain**
+
+The HDF5 file does **not** include:
+
+- Appliance metadata  
+- Building metadata  
+- Environmental sensors (temperature, humidity, occupancy)  
+- Voltage, current, or power factor  
+- Labels for appliance usage  
+- Any non‑electrical measurements  
+
+All contextual and calendar features used in modeling were derived during preprocessing.
+
+---
+
+# **10. Summary**
+
+This project uses the NILMTK HDF5 version of UK‑DALE, which provides:
+
+- High‑resolution (6‑second) whole‑home and submetered power data  
+- Five buildings with a total of 111 meters  
+- A consistent two‑column schema across all meters  
+- Large, continuous time‑series suitable for forecasting and NILM tasks  
+
+This data dictionary reflects the **actual structure** of the dataset as verified through programmatic exploration.
 
 ---

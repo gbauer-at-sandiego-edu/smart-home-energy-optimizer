@@ -4,7 +4,9 @@ flowchart TD
 
 
 
-ROOT\["/ (RootGroup)"]
+T\["UK‑DALE HDF5 Hierarchy"]
+
+T --> ROOT\["/ (RootGroup)"]
 
 
 

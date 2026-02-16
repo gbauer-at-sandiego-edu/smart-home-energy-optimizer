@@ -1,0 +1,12 @@
+{
+  "threshold_w": 189,
+  "p99_train_kettle_watts": 315.1505182,
+  "window": 24,
+  "stride": 1,
+  "val_frac": 0.15,
+  "label_rule": "any_on_in_window",
+  "norm_mu": 291.8094177246094,
+  "norm_sd": 288.5320739746094,
+  "house_train": "House 2",
+  "house_test": "House 1"
+}

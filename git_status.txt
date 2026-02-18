@@ -1,0 +1,79 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    Project Structure
+	deleted:    Team2_CNN_NILM_UploadToColab (1).ipynb
+	deleted:    docs/iot_system_design/CNN_vs_LSTM_Justification.md
+	deleted:    docs/iot_system_design/apa_friendly_architecture_diagram.md
+	deleted:    docs/iot_system_design/cicd_pipeline_flow.md
+	deleted:    docs/iot_system_design/cloud_ingestion_pipeline.md
+	deleted:    docs/iot_system_design/cloud_storage_architecture.md
+	deleted:    docs/iot_system_design/cloud_storage_schema.md
+	deleted:    docs/iot_system_design/cnn_nilm_model_architecture.md
+	deleted:    docs/iot_system_design/code_architecture_diagram.md
+	deleted:    docs/iot_system_design/dashboard_architecture.md
+	deleted:    docs/iot_system_design/dashboard_architecture_dataflow.md
+	deleted:    docs/iot_system_design/dashboard_data_flow.md
+	deleted:    docs/iot_system_design/data_cleaning_validation_flow.md
+	deleted:    docs/iot_system_design/data_contracts_overview.md
+	deleted:    docs/iot_system_design/data_flow_matrix.md
+	deleted:    docs/iot_system_design/data_governance_lineage_compliance.md
+	deleted:    docs/iot_system_design/data_lineage_raw_to_models.md
+	deleted:    docs/iot_system_design/deployment_architecture_local_cloud_cicd.md
+	deleted:    docs/iot_system_design/deployment_diagram.md
+	deleted:    docs/iot_system_design/edge_vs_cloud_tradeoffs.md
+	deleted:    docs/iot_system_design/end_to_end_data_lifecycle.md
+	deleted:    docs/iot_system_design/end_too_end_sequence_diagram.md
+	deleted:    docs/iot_system_design/error_handling_recovery_sequence.md
+	deleted:    docs/iot_system_design/evaluation_metrics_validation_flow.md
+	deleted:    docs/iot_system_design/executive_summary_architecture.md
+	deleted:    docs/iot_system_design/fault_tolerance_reliability.md
+	deleted:    docs/iot_system_design/feature_engineering_cnn_lstm.md
+	deleted:    docs/iot_system_design/feature_engineering_map.md
+	deleted:    docs/iot_system_design/iot_data_pipeline.md
+	deleted:    docs/iot_system_design/iot_scalablility_diagram.md
+	deleted:    docs/iot_system_design/iot_sequence_diagram.md
+	deleted:    docs/iot_system_design/lstm_forecasting_model_architecture.md
+	deleted:    docs/iot_system_design/master_architecture_diagram.md
+	deleted:    docs/iot_system_design/ml_inference_sequence_diagram.md
+	deleted:    docs/iot_system_design/ml_output_schema.md
+	deleted:    docs/iot_system_design/ml_pipeline_diagram.md
+	deleted:    docs/iot_system_design/model_training_pipeline_detailed.md
+	deleted:    docs/iot_system_design/model_training_workflow_cnn_lstm.md
+	deleted:    docs/iot_system_design/mqtt_topic_heirachy.md
+	deleted:    docs/iot_system_design/mqtt_topic_structure_data_contract.md
+	deleted:    docs/iot_system_design/scalability_considerations.md
+	deleted:    docs/iot_system_design/system_boundary_diagram.md
+	deleted:    docs/iot_system_design/system_desing.md
+	deleted:    docs/iot_system_design/system_security_authentication..md
+	deleted:    docs/iot_system_design/timeseries_resampling_alignment.md
+	deleted:    environment.yml
+	modified:   notebooks/01_eda.ipynb
+	modified:   notebooks/Darius_CNN_Training_Loop.ipynb
+	modified:   notebooks/Darius_NILM_CNN_Training.ipynb
+	modified:   notebooks/IoT_Group_Project_Data_Cleaning.ipynb
+	modified:   notebooks/LSTM model comparison of simple vs complex.ipynb
+	modified:   notebooks/LSTM simple hourly model.ipynb
+	modified:   notebooks/Team2_CNN_NILM_Clean_Final DR.ipynb
+	deleted:    src/data_download.py (Kaggle download)
+	modified:   src/data_ingest.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	data/House_1_kettle_analysis.csv
+	data/House_2_kettle_analysis.csv
+	git_status.txt
+	notebooks/Untitled.ipynb
+	notebooks/Untitled1.ipynb
+	notebooks/model_lstm_hourly_forecast_house1.ipynb
+	src/__init__.py
+	src/data/
+	src/data_download.py
+	src/models/
+	src/pipeline.py
+	src/requirements.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

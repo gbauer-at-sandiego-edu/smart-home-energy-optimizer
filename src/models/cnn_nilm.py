@@ -34,22 +34,33 @@ def _load_labeled_series(csv_path: Path, kettle_threshold: float = 10.0):
     Load a labeled NILM CSV containing:
         index, power_watts, kettle_watts
 
+    Performs:
+        - Column validation
+        - Timestamp parsing
+        - Sorting by time
+        - Binary label creation based on threshold
+
     Returns:
-        mains: (N,1) float array
-        labels: (N,) binary array
-        timestamps: datetime array
+        mains:      (N,1) float array of mains power
+        labels:     (N,)  binary array (1 = kettle ON)
+        timestamps: datetime array (useful for debugging/plots)
     """
     df = pd.read_csv(csv_path)
 
+    # Ensure required columns exist
     required = ["index", "power_watts", "kettle_watts"]
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise KeyError(f"Missing columns in {csv_path}: {missing}")
 
+    # Drop rows with missing values in required fields
     df.dropna(subset=required, inplace=True)
+
+    # Parse timestamps and sort chronologically
     df["index"] = pd.to_datetime(df["index"], utc=True)
     df.sort_values("index", inplace=True)
 
+    # Extract mains power and binary labels
     mains = df["power_watts"].values.reshape(-1, 1)
     labels = (df["kettle_watts"].values >= kettle_threshold).astype(int)
 
@@ -62,6 +73,13 @@ def _load_labeled_series(csv_path: Path, kettle_threshold: float = 10.0):
 def _build_cnn(input_length: int) -> tf.keras.Model:
     """
     Construct a compact 1D CNN for binary NILM classification.
+
+    Architecture rationale:
+    - Conv1D layers extract short-term temporal patterns
+      (e.g., kettle activation spikes).
+    - MaxPooling reduces sequence length and noise.
+    - Dense layers perform final binary classification.
+
     Uses tf.keras.Input to avoid deprecated input_shape warnings.
     """
     return models.Sequential([
@@ -72,7 +90,7 @@ def _build_cnn(input_length: int) -> tf.keras.Model:
         layers.MaxPooling1D(pool_size=2),
         layers.Flatten(),
         layers.Dense(64, activation="relu"),
-        layers.Dense(1, activation="sigmoid"),
+        layers.Dense(1, activation="sigmoid"),  # Binary output
     ])
 
 
@@ -83,8 +101,12 @@ def _create_windows(series: np.ndarray, labels: np.ndarray, window: int):
     """
     Convert a univariate series + labels into sliding windows.
 
-    Label for each window = max(label in window), capturing
-    any kettle activation within the window.
+    For each window:
+        X[i] = mains[i : i+window]
+        y[i] = 1 if kettle was ON anywhere in the window
+
+    This captures short-duration activations that may not align
+    perfectly with window boundaries.
     """
     X, y = [], []
     for i in range(len(series) - window + 1):
@@ -107,7 +129,17 @@ def train_cnn_nilm(
 ):
     """
     Train CNN NILM on House 2 and evaluate on House 1.
-    Saves:
+
+    Workflow:
+        1. Load & preprocess House 2 (training)
+        2. Scale mains power using MinMaxScaler
+        3. Create sliding windows for CNN input
+        4. Train CNN with early stopping
+        5. Save model + scaler
+        6. Evaluate on House 1 using same scaler
+        7. Save evaluation report
+
+    Outputs:
         - cnn_kettle_house2.keras
         - cnn_kettle_scaler_house2.pkl
         - cnn_kettle_house1_eval.txt
@@ -116,16 +148,19 @@ def train_cnn_nilm(
     output_reports_dir.mkdir(parents=True, exist_ok=True)
 
     # -----------------------------
-    # Load House 2 (training)
+    # Load House 2 (training data)
     # -----------------------------
     mains2, labels2, _ = _load_labeled_series(house2_csv)
 
+    # Scale mains power for stable training
     scaler = MinMaxScaler()
     mains2_scaled = scaler.fit_transform(mains2)
 
+    # Create sliding windows
     X2, y2 = _create_windows(mains2_scaled, labels2, window)
     X2 = X2.reshape((X2.shape[0], X2.shape[1], 1))
 
+    # Train/validation split
     X_train, X_val, y_train, y_val = train_test_split(
         X2, y2, test_size=test_size, random_state=random_state, stratify=y2
     )
@@ -154,11 +189,11 @@ def train_cnn_nilm(
         verbose=1,
     )
 
-    # Save model in modern format
+    # Save trained model
     model_path = output_models_dir / "cnn_kettle_house2.keras"
     model.save(model_path)
 
-    # Save scaler
+    # Save fitted scaler
     import joblib
     scaler_path = output_models_dir / "cnn_kettle_scaler_house2.pkl"
     joblib.dump(scaler, scaler_path)
@@ -174,6 +209,7 @@ def train_cnn_nilm(
 
     eval_results = model.evaluate(X1, y1, verbose=0)
 
+    # Save evaluation report
     report_path = output_reports_dir / "cnn_kettle_house1_eval.txt"
     with report_path.open("w") as f:
         f.write(f"loss: {eval_results[0]:.4f}, accuracy: {eval_results[1]:.4f}\n")

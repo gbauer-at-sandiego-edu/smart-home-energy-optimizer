@@ -3,27 +3,37 @@ Pipeline orchestrator for the Smart Home Energy Optimizer.
 
 This version removes all ingestion logic and operates entirely
 on pre-cleaned CSVs:
-- House_1_kettle_analysis.csv  (CNN test)
-- House_2_kettle_analysis.csv  (CNN train)
-- House_1_cleaned.csv          (LSTM forecasting)
+- House_1_kettle_analysis.csv  (CNN NILM test set)
+- House_2_kettle_analysis.csv  (CNN NILM training set)
+- House_1_cleaned.csv          (LSTM minute-level forecasting)
 
-The pipeline supports:
-    full        → CNN + LSTM
-    cnn_only    → CNN NILM only
-    lstm_only   → LSTM forecasting only
+Supported modes:
+    full        → Run CNN NILM + LSTM forecasting
+    cnn_only    → Run CNN NILM only
+    lstm_only   → Run LSTM forecasting only
+
+The pipeline acts as a thin orchestration layer:
+- It does NOT perform preprocessing itself.
+- It delegates all modeling work to modules in src/models/.
+- It ensures output directories exist before training.
 """
 
 import argparse
 from pathlib import Path
 import sys
 
+# ------------------------------------------------------------
+# Resolve project paths and ensure src/ is importable
+# ------------------------------------------------------------
 THIS_FILE = Path(__file__).resolve()
 SRC_DIR = THIS_FILE.parent
 PROJECT_ROOT = SRC_DIR.parent
 
+# Add project root to sys.path so imports like src.models.* work
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# Model training entry points
 from src.models.cnn_nilm import train_cnn_nilm
 from src.models.lstm_forecast import train_lstm_forecaster
 
@@ -32,6 +42,13 @@ from src.models.lstm_forecast import train_lstm_forecaster
 # Directory setup
 # ------------------------------------------------------------
 def ensure_dirs():
+    """
+    Create required output directories if they do not exist.
+    These directories store:
+        - Trained models (.keras, .pkl)
+        - Reports (plots, metrics)
+        - Processed CSVs (if any future stages write them)
+    """
     (SRC_DIR / "models").mkdir(parents=True, exist_ok=True)
     (SRC_DIR / "data" / "processed").mkdir(parents=True, exist_ok=True)
     (SRC_DIR / "data" / "reports").mkdir(parents=True, exist_ok=True)
@@ -41,8 +58,19 @@ def ensure_dirs():
 # Main entry point
 # ------------------------------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="CSV-based Smart Home Energy Optimizer Pipeline")
+    """
+    Parse CLI arguments and run the requested pipeline stage(s).
 
+    Example usage:
+        python -m src.pipeline --mode full
+        python -m src.pipeline --mode cnn_only
+        python -m src.pipeline --mode lstm_only
+    """
+    parser = argparse.ArgumentParser(
+        description="CSV-based Smart Home Energy Optimizer Pipeline"
+    )
+
+    # Which part of the pipeline to run
     parser.add_argument(
         "--mode",
         type=str,
@@ -56,14 +84,14 @@ def main():
         "--house1_csv",
         type=str,
         default=str(SRC_DIR / "data" / "interim" / "House_1_kettle_analysis.csv"),
-        help="House 1 mains + kettle CSV.",
+        help="House 1 mains + kettle CSV (CNN NILM test set).",
     )
 
     parser.add_argument(
         "--house2_csv",
         type=str,
         default=str(SRC_DIR / "data" / "interim" / "House_2_kettle_analysis.csv"),
-        help="House 2 mains + kettle CSV.",
+        help="House 2 mains + kettle CSV (CNN NILM training set).",
     )
 
     # LSTM input
@@ -71,17 +99,18 @@ def main():
         "--house1_cleaned_csv",
         type=str,
         default=str(SRC_DIR / "data" / "interim" / "House_1_cleaned.csv"),
-        help="House 1 cleaned aggregate CSV.",
+        help="House 1 cleaned aggregate CSV (LSTM forecasting input).",
     )
 
     args = parser.parse_args()
     ensure_dirs()
 
+    # Output directories for models + reports
     models_dir = SRC_DIR / "models"
     reports_dir = SRC_DIR / "data" / "reports"
 
     # -----------------------------
-    # CNN NILM
+    # CNN NILM stage
     # -----------------------------
     if args.mode in ("full", "cnn_only"):
         train_cnn_nilm(
@@ -92,7 +121,7 @@ def main():
         )
 
     # -----------------------------
-    # LSTM forecasting
+    # LSTM forecasting stage
     # -----------------------------
     if args.mode in ("full", "lstm_only"):
         train_lstm_forecaster(
